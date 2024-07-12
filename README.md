@@ -14,7 +14,7 @@ Dynamics 365 FSCM WarmUp is an extension for Chromium based Browsers designed to
 ## Installation
 
 1. Clone or download this repository.
-2. Open Chrome (or any Chromium based Browser) and navigate to `chrome://extensions/`. (
+2. Open Chrome (or any Chromium based Browser) and navigate to `chrome://extensions/`. 
 3. Enable "Developer mode" using the toggle in the top right corner.
 4. Click on "Load unpacked" and select the directory where you downloaded/cloned this repository.
 
