@@ -26,13 +26,3 @@ Dynamics 365 FSCM WarmUp is an extension for Chromium based Browsers designed to
 4. Use the "Add Page" button to add new pages to the list.
 5. Use the "Restore to Default" button to reset to the default set of pages.
 6. Use the "Export Pages" and "Import Pages" buttons to manage your list of pages.
-
-## Development
-
-### Files
-
-- **popup.html**: The HTML file for the extension's popup UI.
-- **popup.js**: The JavaScript file for the popup's functionality.
-- **background.js**: The background script for the extension.
-- **content.js**: The content script that runs on the Dynamics 365 FSCM pages.
-- **manifest.json**: The manifest file that defines the extension.
