@@ -53,6 +53,8 @@
     <button id="openPages" disabled><span>&#x1F525; Warm it up! &#x1F525;</span></button>
     <label for="newPageInput">Add a new page:</label>
     <input type="text" id="newPageInput" placeholder="Add new page">
+    <label for="newCompanyInput">Add a company (optional, e.g., USMF):</label>
+    <input type="text" id="newCompanyInput" placeholder="Company code">
     <button id="addPage">Add Page</button>
     <div id="pagesToOpenList"></div>
     <div class="pagination">
@@ -60,8 +62,8 @@
         <span id="pageInfo"></span>
         <button id="nextPage">&gt;</button>
     </div>
-	<button id="exportPages">Export Pages</button>
-	<p style="font-size: 12px; color: red;">Importing pages by file overwrites all existing pages in the list, so please make sure that you merge all pages into the text file if necessary</p>
+    <button id="exportPages">Export Pages</button>
+    <p style="font-size: 12px; color: red;">Importing pages by file overwrites all existing pages in the list, so please make sure that you merge all pages into the text file if necessary</p>
     <input type="file" id="importPagesFile" style="display: none;">
     <button id="importPages">Import Pages</button>
     <button id="restoreDefaults">Restore to Default</button>

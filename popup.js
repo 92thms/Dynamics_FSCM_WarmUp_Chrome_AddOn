@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var closePagesCheckbox = document.getElementById("closePagesCheckbox");
     var pagesToOpenList = document.getElementById("pagesToOpenList");
     var newPageInput = document.getElementById("newPageInput");
+    var newCompanyInput = document.getElementById("newCompanyInput");
     var addPageButton = document.getElementById("addPage");
     var restoreDefaultsButton = document.getElementById("restoreDefaults");
     var exportPagesButton = document.getElementById("exportPages");
@@ -13,36 +14,36 @@ document.addEventListener("DOMContentLoaded", function() {
     var pageInfo = document.getElementById("pageInfo");
 
     var defaultPagesToOpen = [
-        "EcoResProductDetailsExtendedGrid",
-        "CaseListPage",
-        "smmActivitiesListPage",
-        "PurchTableListPage",
-        "VendTableListPage",
-        "CustTableListPage",
-        "SalesQuotationListPage",
-        "SalesTableListPage",
-        "LedgerJournalTable3",
-        "WHSLoadPlanningListPage",
-        "SalesOrderProcessingWorkspace",
-        "WHSShipPlanningListPage",
-        "WHSWorkTableListPage",
-        "WMSArrivalOverview",
-        "InventOnhandItem",
-        "SalesReleaseOrderPicking",
-        "WMSPickingRegistration",
-        "ProdTableListPage",
-        "ReqPOGridView",
-        "ReqSupplyDemandSchedule",
-        "ProjProjectsListPage",
-        "SalesQuotationsListPage_Proj",
-        "SMAServiceOrderTableListPage",
-        "SMAAgreementTableListPage",
-        "ReqCreatePlanWorkspace",
-        "SalesOrderProcessingWorkspace",
-        "CostAnalysisWorkspace",
-        "JmgShopSupervisorWorkspace",
-        "ProjManagementWorkspace",
-        "HcmEmployeeSelfServiceWorkspace"
+        { page: "EcoResProductDetailsExtendedGrid", company: "USMF" },
+        { page: "CaseListPage", company: "USMF" },
+        { page: "smmActivitiesListPage", company: "USMF" },
+        { page: "PurchTableListPage", company: "USMF" },
+        { page: "VendTableListPage", company: "USMF" },
+        { page: "CustTableListPage", company: "USMF" },
+        { page: "SalesQuotationListPage", company: "USMF" },
+        { page: "SalesTableListPage", company: "USMF" },
+        { page: "LedgerJournalTable3", company: "USMF" },
+        { page: "WHSLoadPlanningListPage", company: "USMF" },
+        { page: "SalesOrderProcessingWorkspace", company: "USMF" },
+        { page: "WHSShipPlanningListPage", company: "USMF" },
+        { page: "WHSWorkTableListPage", company: "USMF" },
+        { page: "WMSArrivalOverview", company: "USMF" },
+        { page: "InventOnhandItem", company: "USMF" },
+        { page: "SalesReleaseOrderPicking", company: "USMF" },
+        { page: "WMSPickingRegistration", company: "USMF" },
+        { page: "ProdTableListPage", company: "USMF" },
+        { page: "ReqPOGridView", company: "USMF" },
+        { page: "ReqSupplyDemandSchedule", company: "USMF" },
+        { page: "ProjProjectsListPage", company: "USMF" },
+        { page: "SalesQuotationsListPage_Proj", company: "USMF" },
+        { page: "SMAServiceOrderTableListPage", company: "USMF" },
+        { page: "SMAAgreementTableListPage", company: "USMF" },
+        { page: "ReqCreatePlanWorkspace", company: "USMF" },
+        { page: "SalesOrderProcessingWorkspace", company: "USMF" },
+        { page: "CostAnalysisWorkspace", company: "USMF" },
+        { page: "JmgShopSupervisorWorkspace", company: "USMF" },
+        { page: "ProjManagementWorkspace", company: "USMF" },
+        { page: "HcmEmployeeSelfServiceWorkspace", company: "USMF" }
     ];
 
     var currentPage = 1;
@@ -55,11 +56,11 @@ document.addEventListener("DOMContentLoaded", function() {
         var end = start + itemsPerPage;
         var paginatedPages = pages.slice(start, end);
 
-        paginatedPages.forEach(function(page, index) {
+        paginatedPages.forEach(function(entry, index) {
             var pageItem = document.createElement("div");
             pageItem.className = "page-item";
             pageItem.innerHTML = `
-                <span>${page}</span>
+                <span>${entry.page} (Company: ${entry.company})</span>
                 <button class="removePage" data-index="${start + index}">X</button>
             `;
             pagesToOpenList.appendChild(pageItem);
@@ -102,10 +103,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     addPageButton.addEventListener("click", function() {
         var newPage = newPageInput.value.trim();
+        var newCompany = newCompanyInput.value.trim() || "USMF";
         if (newPage) {
-            pages.push(newPage);
+            pages.push({ page: newPage, company: newCompany });
             chrome.storage.sync.set({ "pagesToOpen": pages });
             newPageInput.value = "";
+            newCompanyInput.value = "";
             updatePagesList();
             updatePagination();
         }
@@ -119,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     exportPagesButton.addEventListener("click", function() {
-        var pagesToExport = pages.join("\n");
+        var pagesToExport = pages.map(entry => `${entry.page},${entry.company}`).join("\n");
         var blob = new Blob([pagesToExport], { type: "text/plain" });
         var url = URL.createObjectURL(blob);
         var a = document.createElement("a");
@@ -138,10 +141,11 @@ document.addEventListener("DOMContentLoaded", function() {
         if (file) {
             var reader = new FileReader();
             reader.onload = function(e) {
-                var importedPages = e.target.result.split("\n").map(function(page) {
-                    return page.trim();
-                }).filter(function(page) {
-                    return page.length > 0;
+                var importedPages = e.target.result.split("\n").map(function(line) {
+                    var parts = line.split(",");
+                    return { page: parts[0].trim(), company: parts[1] ? parts[1].trim() : "USMF" };
+                }).filter(function(entry) {
+                    return entry.page.length > 0;
                 });
                 pages = importedPages;
                 chrome.storage.sync.set({ "pagesToOpen": pages });
@@ -177,7 +181,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Speichern Sie den Zustand des Kontrollkästchens sofort, wenn es geändert wird
     closePagesCheckbox.addEventListener("change", function() {
         chrome.storage.sync.set({ "shouldClosePages": closePagesCheckbox.checked });
     });
